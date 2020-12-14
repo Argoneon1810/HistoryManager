@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">HistoryManager</string>
+    <string name="app_name">History Manager</string>
+    <string name="cntdesc">image</string>
+
+    <!-- IntroPage -->
+    <string name="tutorialchkbox">Do you want to see tutorial?</string>
+    <string name="introguide">Touch to continue</string>
 </resources>

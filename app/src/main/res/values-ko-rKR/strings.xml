@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">히스토리 매니저</string>
+    <string name="cntdesc">이미지</string>
+
+    <!-- 인트로 페이지 -->
+    <string name="tutorialchkbox">사용 도우미를 보시겠습니까?</string>
+    <string name="introguide">터치하여 다음으로 진행</string>
+</resources>
