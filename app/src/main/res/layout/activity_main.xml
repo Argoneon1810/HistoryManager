@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/icon"
+            android:id="@+id/mainIcon"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:contentDescription="@string/cntdesc"
@@ -38,12 +38,12 @@
             android:textColor="@color/white"
             android:textSize="18sp"
             android:typeface="normal"
-            app:layout_constraintEnd_toEndOf="@+id/icon"
-            app:layout_constraintStart_toStartOf="@+id/icon"
-            app:layout_constraintTop_toBottomOf="@+id/icon" />
+            app:layout_constraintEnd_toEndOf="@+id/mainIcon"
+            app:layout_constraintStart_toStartOf="@+id/mainIcon"
+            app:layout_constraintTop_toBottomOf="@+id/mainIcon" />
 
         <CheckBox
-            android:id="@+id/checkBox"
+            android:id="@+id/tutChkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
@@ -51,16 +51,40 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ContentBody"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/BigFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        android:clickable="true"
+        android:contentDescription="@string/cntdescfab"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/ContentBody"
+        app:layout_constraintEnd_toEndOf="@id/ContentBody"
+        app:srcCompat="@drawable/ic_baseline_add_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

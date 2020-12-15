@@ -5,4 +5,6 @@
     <!-- IntroPage -->
     <string name="tutorialchkbox">Do you want to see tutorial?</string>
     <string name="introguide">Touch to continue</string>
+    <string name="introguide2">Touch \"+\" to create new item</string>
+    <string name="cntdescfab">button</string>
 </resources>

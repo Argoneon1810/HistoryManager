@@ -6,4 +6,6 @@
     <!-- 인트로 페이지 -->
     <string name="tutorialchkbox">사용 도우미를 보시겠습니까?</string>
     <string name="introguide">터치하여 다음으로 진행</string>
+    <string name="introguide2">\"+\" 를 터치하여 새로운 항목 생성</string>
+    <string name="cntdescfab">버튼</string>
 </resources>
