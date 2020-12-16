@@ -7,4 +7,6 @@
     <string name="introguide">Touch to continue</string>
     <string name="introguide2">Touch \"+\" to create new item</string>
     <string name="cntdescfab">button</string>
+    <string name="item_title">Title</string>
+    <string name="item_desc">description</string>
 </resources>

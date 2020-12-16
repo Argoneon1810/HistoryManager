@@ -9,6 +9,7 @@
         android:roundIcon="@drawable/ico_history"
         android:supportsRtl="true"
         android:theme="@style/Theme.HistoryManager">
+        <activity android:name=".CategoryActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.HistoryManager.NoTitle">

@@ -1,106 +1,127 @@
 package com.ark.noahs.historymanager
 
-import android.os.Build
+import android.content.Context
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.util.TypedValue
+import android.view.GestureDetector
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.MotionEvent
 import android.view.View
-import android.widget.CheckBox
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.updateLayoutParams
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
+import com.ark.noahs.historymanager.databinding.ActivityMainBinding
+import kotlin.collections.ArrayList
 
 
-class MainActivity : AppCompatActivity() {
-    lateinit var contentBody : ConstraintLayout
-    lateinit var mRecyclerView : RecyclerView
-    lateinit var fab : FloatingActionButton
-    lateinit var mainTxt : TextView
-    lateinit var icon : ImageView
-    lateinit var chkbox : CheckBox
+class MainActivity : AppCompatActivity(), MainRecyclerAdapter.MyInterface {
+    private lateinit var binding: ActivityMainBinding
     var introduced : Boolean = false
+    var state : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        contentBody = findViewById(R.id.ContentBody)
-        mRecyclerView = findViewById(R.id.recView)
-        fab = findViewById(R.id.BigFAB)
-        mainTxt = findViewById(R.id.txt_intro)
-        icon = findViewById(R.id.mainIcon)
-        chkbox = findViewById(R.id.tutChkBox)
-
+        //Recycler View Setup
         var dataList : ArrayList<MainRecyclerData> = arrayListOf()
-
-        val mAdapter = MainRecyclerAdapter(this, dataList)
-        mRecyclerView.adapter = mAdapter
-
+        val mAdapter = MainRecyclerAdapter(this, this, dataList)
+        binding.recView.adapter = mAdapter
         val lm = LinearLayoutManager(this)
-        mRecyclerView.layoutManager = lm
-        mRecyclerView.setHasFixedSize(true)
+        binding.recView.layoutManager = lm
+        binding.recView.setHasFixedSize(true)
 
-        fab.setOnClickListener {
-            dataList.add(MainRecyclerData("","Hello","World"))    
-            if(mRecyclerView.childCount > 0) setScreen_MoreThanZero()
+        binding.recView.addOnItemTouchListener(
+            RecyclerTouchListener(
+                applicationContext,
+                binding.recView,
+                object : ClickListener {
+                    override fun onClick(view: View?, position: Int) {}
+
+                    override fun onLongClick(view: View?, position: Int) {}
+                })
+        )
+
+        //FAB onClick
+        binding.BigFAB.setOnClickListener {
+            dataList.add(MainRecyclerData("", "Hello", "World"))
+            mAdapter.notifyItemInserted(mAdapter.itemCount - 1)
+           if(state == 1 && 0 < binding.recView.adapter?.itemCount ?: 0) {
+               binding.root.transitionToState(R.id.nonzero_root)
+               binding.Intro.transitionToState(R.id.nonzero_intro)
+               state = 2
+           }
         }
     }
 
     fun onClickIntro(view: View?) {
         if (!introduced){
-            if(mRecyclerView.childCount > 0) {
-                setScreen_MoreThanZero()
-                fab.visibility = View.VISIBLE
-                icon.visibility = View.GONE
-                chkbox.visibility = View.GONE
-                introduced = true
+            if(0 < binding.recView.adapter?.itemCount ?: 0) {
+                binding.root.transitionToState(R.id.nonzero_root)
+                binding.Intro.transitionToState(R.id.nonzero_intro)
+                state = 2
             } else {
-                setScreen_Zero()
+                binding.root.transitionToState(R.id.zero_root)
+                binding.Intro.transitionToState(R.id.zero_intro)
+                binding.txtIntro.text = getString(R.string.introguide2)
+                state = 1
             }
         }
     }
 
-    fun setScreen_MoreThanZero() {
-        val displayMetrics = DisplayMetrics()
-        var height: Int = displayMetrics.heightPixels + getNavigationBarHeight()
-        mRecyclerView.updateLayoutParams {
-            height = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                height - 64f,
-                resources.displayMetrics
-            ).toInt()
+    override fun notifyChange(position: Int) {
+        val adapter = binding.recView.adapter
+        (adapter as MainRecyclerAdapter).removeAt(position)
+        adapter.notifyItemRemoved(position)
+        adapter.notifyDataSetChanged()
+        if(0 == binding.recView.adapter?.itemCount ?: 0) {
+            binding.root.transitionToState(R.id.zero_root)
+            binding.Intro.transitionToState(R.id.zero_intro)
+            state = 1
         }
     }
 
-    fun setScreen_Zero() {
-        mRecyclerView.updateLayoutParams {
-            height = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                64f,
-                resources.displayMetrics
-            ).toInt()
-        }
-        fab.visibility = View.VISIBLE
-        mainTxt.text = getString(R.string.introguide2)
-        icon.alpha = .5f
-        chkbox.visibility = View.GONE
-        introduced = true
+    interface ClickListener {
+        fun onClick(view: View?, position: Int)
+        fun onLongClick(view: View?, position: Int)
     }
 
-    private fun getNavigationBarHeight(): Int {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            val metrics = DisplayMetrics()
-            windowManager.defaultDisplay.getMetrics(metrics)
-            val usableHeight = metrics.heightPixels
-            windowManager.defaultDisplay.getRealMetrics(metrics)
-            val realHeight = metrics.heightPixels
-            return if (realHeight > usableHeight) realHeight - usableHeight else 0
+    class RecyclerTouchListener(
+        context: Context?,
+        recyclerView: RecyclerView,
+        clickListener: ClickListener?
+    ) : OnItemTouchListener {
+        private val gestureDetector: GestureDetector
+        private val clickListener: ClickListener? = clickListener
+
+        override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+            val child = rv.findChildViewUnder(e.x, e.y)
+            if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
+                clickListener.onClick(child, rv.getChildAdapterPosition(child))
+            }
+            return false
         }
-        return 0
+
+        override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+        override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+
+        init {
+            gestureDetector = GestureDetector(context, object : SimpleOnGestureListener() {
+                override fun onSingleTapUp(e: MotionEvent): Boolean {
+                    return true
+                }
+
+                override fun onLongPress(e: MotionEvent) {
+                    val child = recyclerView.findChildViewUnder(e.x, e.y)
+                    if (child != null && clickListener != null) {
+                        clickListener.onLongClick(
+                            child,
+                            recyclerView.getChildAdapterPosition(child)
+                        )
+                    }
+                }
+            })
+        }
     }
 }

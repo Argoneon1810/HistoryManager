@@ -8,4 +8,6 @@
     <string name="introguide">터치하여 다음으로 진행</string>
     <string name="introguide2">\"+\" 를 터치하여 새로운 항목 생성</string>
     <string name="cntdescfab">버튼</string>
+    <string name="item_title">제목</string>
+    <string name="item_desc">설명</string>
 </resources>
