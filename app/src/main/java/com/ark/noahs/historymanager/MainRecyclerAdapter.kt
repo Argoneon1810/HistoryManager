@@ -64,7 +64,7 @@ class MainRecyclerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.categoryitem, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_category, parent, false)
         return CustomViewHolder(view)
     }
 

@@ -9,4 +9,8 @@
     <string name="cntdescfab">button</string>
     <string name="item_title">Title</string>
     <string name="item_desc">description</string>
+    <string name="dial_category_title">Create New Category</string>
+    <string name="dial_category_hint1">Name of the category</string>
+    <string name="button_confirm">Confirm</string>
+    <string name="dial_category_hint2">Description of the new category</string>
 </resources>
