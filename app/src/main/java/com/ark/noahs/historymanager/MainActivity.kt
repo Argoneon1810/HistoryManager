@@ -1,6 +1,7 @@
 package com.ark.noahs.historymanager
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -67,28 +68,36 @@ class MainActivity : AppCompatActivity(), MainRecyclerAdapter.MyInterface {
         binding.recView.layoutManager = lm                                                              //레이아웃 매니저 연결
         binding.recView.setHasFixedSize(true)                                                           //고정 사이즈 토글
 
-        val context = this                                                                              //터치 리스너 안에서 메인액티비티 부를 용도
         binding.recView.addOnItemTouchListener(                                                         //리사이클러 뷰 터치 리스너
             RecyclerTouchListener(
                 applicationContext,
                 binding.recView,
                 object : ClickListener {
-                    override fun onClick(view: View?, position: Int) {                                              //여기 안에 기능구현 하면 됨
+                    override fun onClick(
+                        view: View?,
+                        position: Int
+                    ) {                                              //여기 안에 기능구현 하면 됨
                         //여기여기
+                        var data = dataList[position]
+                        val intent = Intent(baseContext, CategoryActivity::class.java)
+
+                        intent.putExtra("image", data.getDataImage())
+                        intent.putExtra("title", data.getDataTitle())
+                        intent.putExtra("desc", data.getDataDesc())
+
+                        startActivity(intent)
                     }
                 })
         )
 
         //FAB onClick
         binding.BigFAB.setOnClickListener {                                                             //FAB 클릭 리스너
-            MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {                            //afollestad의 Material Dialog 호출
+            MaterialDialog(this@MainActivity, BottomSheet(LayoutMode.WRAP_CONTENT)).show {                            //afollestad의 Material Dialog 호출
                 customView(R.layout.dialog_category)                                                            //커스텀 뷰 할당
-                cornerRadius(res=R.dimen.dial_corner_radius)                                                    //다이얼로그 모서리 둥글게
-
-                val dialog = this                                                                               //클릭 리스너 안에서 다이얼로그 부를 용도
-                dialog.findViewById<MaterialButton>(R.id.confirm_button).setOnClickListener {                       //다이얼로그 안 확인 버튼 클릭 리스너
-                    val tempText1 = dialog.findViewById<TextInputEditText>(R.id.dial_cat_input1).text.toString()        //다이얼로그 안 텍스트 필드 1 값
-                    val tempText2 = dialog.findViewById<TextInputEditText>(R.id.dial_cat_input2).text.toString()        //다이얼로그 안 텍스트 필드 2 값
+                cornerRadius(res = R.dimen.dial_corner_radius)                                                    //다이얼로그 모서리 둥글게
+                this.findViewById<MaterialButton>(R.id.confirm_button).setOnClickListener {                       //다이얼로그 안 확인 버튼 클릭 리스너
+                    val tempText1 = this.findViewById<TextInputEditText>(R.id.dial_cat_input1).text.toString()        //다이얼로그 안 텍스트 필드 1 값
+                    val tempText2 = this.findViewById<TextInputEditText>(R.id.dial_cat_input2).text.toString()        //다이얼로그 안 텍스트 필드 2 값
                     if(tempText1.isNotEmpty()) {                                                                        //다이얼로그 안 텍스트 필드 1이 비지 않았고
                         if(tempText2.isNotEmpty())                                                                          //다이얼로그 안 텍스트 필드 2가 비지 않았다면
                             dataList.add(MainRecyclerData("", tempText1, tempText2))                                    //둘 모두 입력해 새 항목 생성
@@ -99,7 +108,7 @@ class MainActivity : AppCompatActivity(), MainRecyclerAdapter.MyInterface {
                             binding.root.transitionToState(R.id.nonzero_root)                                                   //레이아웃을 '0이 아님'으로 변경
                             binding.Intro.transitionToState(R.id.nonzero_intro)                                                 //...
                         }
-                        dialog.dismiss()                                                                                    //다이얼로그 닫기
+                        this.dismiss()                                                                                    //다이얼로그 닫기
                     }                                                                                                   //다이얼로그 안 텍스트 필드 1이 비었으면 아무것도 하지 않음
                 }
             }
